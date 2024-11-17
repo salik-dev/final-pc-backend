@@ -5,8 +5,8 @@ const { ObjectId } = mongoose.Schema.Types;
 const additionalDocSchema = new mongoose.Schema({
     entrepreneurId: {
         type: ObjectId,
-        ref: 'Entrepreneur',
-        required: true,
+        ref: 'Company',
+        required: [true, 'Company is required'],
     },
     title: {
         type: String,

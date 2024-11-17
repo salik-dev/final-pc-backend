@@ -5,8 +5,8 @@ const { ObjectId } = mongoose.Schema.Types;
 const videoImageSchema = new mongoose.Schema({
     entrepreneurId: {
         type: ObjectId,
-        ref: 'Entrepreneur',
-        required: [true, 'Entrepreneur id is missing'],
+        ref: 'Company',
+        required: [true, 'Company id is missing'],
     },
     logoBanner: {
         type: [String],

@@ -66,6 +66,15 @@ exports.getAll = async (req, res) => {
     }
 };
 
+exports.getEntrepreneur = async(req, res) => {
+    try {
+        const entrepreneurs = await Entrepreneur.find({}, {_id: 1, email: 1 });
+        Response(res, 200, "Entrepreneur Fetched Successfully", entrepreneurs);
+    } catch (error) {
+        Response(res, 500, "Something went wrong during Entrepreneur data fetch", error.message);
+    }
+}
+
 // Update investor by ID
 exports.updateById = (req, res) => {
     upload.fields([

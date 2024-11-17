@@ -3,6 +3,7 @@ const { protect, restrict } = require('../controllers/user');
 const {
     create,
     getAll,
+    getEntrepreneur,
     updateById,
     deleteById
 } = require('../controllers/company');

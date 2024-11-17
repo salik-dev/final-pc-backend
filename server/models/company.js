@@ -6,7 +6,7 @@ const companySchema = new mongoose.Schema({
     entrepreneurId: {
         type: ObjectId,
         ref: 'Entrepreneur',
-        required: true,
+        required: [true, 'Entrepreneur is required'],
     },
     pitchTitle: {
         type: String,

@@ -1,0 +1,1444 @@
+{
+	"info": {
+		"_postman_id": "11bf12e9-a94e-4f40-aae4-9e6133d0dadc",
+		"name": "connectPitch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25267355"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "sign-up",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "payload",
+									"value": "{}",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MDQxNzgwMmI4MGU0MmZhZjZjZDg5NSIsImlhdCI6MTcyODMyMTQyNCwiZXhwIjoxNzI4NDA3ODI0fQ.pkWiPbbDfxOHy-aOHoAZ3TdjX4lLqrEfgASEnnve1DA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"admin4\",\n    \"email\": \"admin4@gmail.com\",\n    \"password\": \"admin3123123\",\n    \"role\": \"investor\",\n    \"status\": \"approved\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/user/create",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sign-in",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": \"admin123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/user/sign-in",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"sign-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"balghari salik\",\n    \"email\": \"balgharisalik@gmail.com\",\n    \"password\": \"123123123131231\",\n    \"role\": \"entrepreneur\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/user/update/67040c03133e2b1580303923",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"update",
+								"67040c03133e2b1580303923"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/user",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/user/remove/67040c03133e2b1580303923",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"remove",
+								"67040c03133e2b1580303923"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Request-Approval",
+			"item": [
+				{
+					"name": "send",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MWE5OGFlZTUxMzExNjRjNjQwYjYwNSIsImlhdCI6MTcyOTc5NjQ0MSwiZXhwIjoxNzI5ODgyODQxfQ.W_OCl6J2xmPdLRZkguf3V48qM2bxKjcqo8aUuffQdig",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/approval/send/671a98aee5131164c640b605",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"approval",
+								"send",
+								"671a98aee5131164c640b605"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MWE5OGFlZTUxMzExNjRjNjQwYjYwNSIsImlhdCI6MTcyOTc5NjQ0MSwiZXhwIjoxNzI5ODgyODQxfQ.W_OCl6J2xmPdLRZkguf3V48qM2bxKjcqo8aUuffQdig",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/approval/update-status/671a98aee5131164c640b605",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"approval",
+								"update-status",
+								"671a98aee5131164c640b605"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MWE5OGFlZTUxMzExNjRjNjQwYjYwNSIsImlhdCI6MTcyOTc5NjQ0MSwiZXhwIjoxNzI5ODgyODQxfQ.W_OCl6J2xmPdLRZkguf3V48qM2bxKjcqo8aUuffQdig",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/approval/get-all",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"approval",
+								"get-all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Investors",
+			"item": [
+				{
+					"name": "add",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fullName",
+									"value": "bahadur ali",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "bahadur@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "phoneNumber",
+									"value": "98765432112",
+									"type": "text"
+								},
+								{
+									"key": "profilePicture",
+									"type": "file",
+									"src": "/run/user/1000/doc/9b72c8b8/auth-image.svg"
+								},
+								{
+									"key": "companyName",
+									"value": "bahadur",
+									"type": "text"
+								},
+								{
+									"key": "industryInterest",
+									"value": "bahadur",
+									"type": "text"
+								},
+								{
+									"key": "Bios",
+									"value": "software bahadur",
+									"type": "text"
+								},
+								{
+									"key": "skills",
+									"value": "bahadur",
+									"type": "text"
+								},
+								{
+									"key": "location",
+									"value": "Rwp",
+									"type": "text"
+								},
+								{
+									"key": "startupStagePreference",
+									"value": "Seed",
+									"type": "text"
+								},
+								{
+									"key": "investmentAmountRange",
+									"value": "80000",
+									"type": "text"
+								},
+								{
+									"key": "geographicalPreference",
+									"value": "yes",
+									"type": "text"
+								},
+								{
+									"key": "typeOfInvestment",
+									"value": "Loans",
+									"type": "text"
+								},
+								{
+									"key": "investmentGoals",
+									"value": "Billionair",
+									"type": "text"
+								},
+								{
+									"key": "investmentHistory",
+									"value": "superb",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/investor/create",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"investor",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fullName",
+									"value": "sk",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "sk@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "phoneNumber",
+									"value": "77777777777",
+									"type": "text"
+								},
+								{
+									"key": "profilePicture",
+									"type": "file",
+									"src": "/run/user/1000/doc/99c7543f/Logo.svg"
+								},
+								{
+									"key": "companyName",
+									"value": "sk",
+									"type": "text"
+								},
+								{
+									"key": "industryInterest",
+									"value": "123",
+									"type": "text"
+								},
+								{
+									"key": "Bios",
+									"value": "sk",
+									"type": "text"
+								},
+								{
+									"key": "skills",
+									"value": "sk",
+									"type": "text"
+								},
+								{
+									"key": "location",
+									"value": "sk",
+									"type": "text"
+								},
+								{
+									"key": "startupStagePreference",
+									"value": "Idea",
+									"type": "text"
+								},
+								{
+									"key": "investmentAmountRange",
+									"value": "100000",
+									"type": "text"
+								},
+								{
+									"key": "geographicalPreference",
+									"value": "123",
+									"type": "text"
+								},
+								{
+									"key": "typeOfInvestment",
+									"value": "Loans",
+									"type": "text"
+								},
+								{
+									"key": "investmentGoals",
+									"value": "sk",
+									"type": "text"
+								},
+								{
+									"key": "investmentHistory",
+									"value": "sk",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/investor/update/6702c9271877dd31d287bf47",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"investor",
+								"update",
+								"6702c9271877dd31d287bf47"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/investor",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"investor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/investor/remove/6702c9271877dd31d287bf47",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"investor",
+								"remove",
+								"6702c9271877dd31d287bf47"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Entrepreneur",
+			"item": [
+				{
+					"name": "add",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fullName",
+									"value": "SALIK ali",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "SALIK@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "phoneNumber",
+									"value": "111111111111",
+									"type": "text"
+								},
+								{
+									"key": "profilePicture",
+									"type": "file",
+									"src": "/home/balisalik/Pictures/Screenshots/1.png"
+								},
+								{
+									"key": "location",
+									"value": "SALIK",
+									"type": "text"
+								},
+								{
+									"key": "industry",
+									"value": "SALIK bahadur",
+									"type": "text"
+								},
+								{
+									"key": "Bios",
+									"value": "SALIK",
+									"type": "text"
+								},
+								{
+									"key": "skills",
+									"value": "abad",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/entrepreneur/create",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"entrepreneur",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fullName",
+									"value": "ali",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "6702cd4fdd81543d1bfdc73a@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "phoneNumber",
+									"value": "6702cd4fdd81543d1bfdc73a",
+									"type": "text"
+								},
+								{
+									"key": "profilePicture",
+									"type": "file",
+									"src": "/home/balisalik/Pictures/m.jpg"
+								},
+								{
+									"key": "location",
+									"value": "6702cd4fdd81543d1bfdc73a",
+									"type": "text"
+								},
+								{
+									"key": "industry",
+									"value": "ali",
+									"type": "text"
+								},
+								{
+									"key": "Bios",
+									"value": "aliali",
+									"type": "text"
+								},
+								{
+									"key": "skills",
+									"value": "aliabad",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/entrepreneur/update/6702cd4fdd81543d1bfdc73a",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"entrepreneur",
+								"update",
+								"6702cd4fdd81543d1bfdc73a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MWE5ODk0ZTUxMzExNjRjNjQwYjYwMiIsImlhdCI6MTcyOTkzMzc2OCwiZXhwIjoxNzMwMDIwMTY4fQ.AetTawNX1j0RF5mmgkxII1Lp6OOWoMI6t_PA9aQTqQg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/entrepreneur",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"entrepreneur"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MWE5ODk0ZTUxMzExNjRjNjQwYjYwMiIsImlhdCI6MTcyOTkzMzc2OCwiZXhwIjoxNzMwMDIwMTY4fQ.AetTawNX1j0RF5mmgkxII1Lp6OOWoMI6t_PA9aQTqQg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/entrepreneur/find",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"entrepreneur",
+								"find"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/entrepreneur/remove/6702cecf40b7fc3ec52307b5",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"entrepreneur",
+								"remove",
+								"6702cecf40b7fc3ec52307b5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Company",
+			"item": [
+				{
+					"name": "add",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"investorId\": \"60d5f484a1b8c75244c657d2\", // Replace with a valid ObjectId of an existing Investor\n    \"pitchTitle\": \"Revolutionizing E-commerce with AI\",\n    \"shortSummary\": \"A cutting-edge platform that uses AI to enhance online shopping experiences.\",\n    \"website\": \"https://www.example.com\",\n    \"companyBased\": \"New York, USA\",\n    \"industry\": \"E-commerce\",\n    \"stage\": \"Seed\",\n    \"ideaInvestorRole\": \"Lead Investor\",\n    \"investmentRange\": \"$500,000 - $1,000,000\",\n    \"previousRoundRaise\": \"$250,000\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/company/create",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"company",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fullName\": \"mith\",\n    \"email\": \".smith@example.com\",\n    \"phoneNumber\": \"+987654321\",\n    \"location\": \"an Francisco, USA\",\n    \"industry\": \"-commerce\",\n    \"Bios\": \"passionate entrepreneur with a focus on innovative retail solutions.\",\n    \"skills\": \"roduct Development, Marketing Strategy, Team Leadership\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/company/update/67028080a8ac8ae5a26bd23a",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"company",
+								"update",
+								"67028080a8ac8ae5a26bd23a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/company",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/company/remove/67028217105a90e74f1ebf91",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"company",
+								"remove",
+								"67028217105a90e74f1ebf91"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Video-Image",
+			"item": [
+				{
+					"name": "add",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "investorId",
+								"value": "67027cb860c150dbbf535f08",
+								"type": "text"
+							},
+							{
+								"key": "title",
+								"value": "business contract",
+								"type": "text"
+							},
+							{
+								"key": "documents",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "investorId",
+									"value": "67027cb860c150dbbf535f08",
+									"type": "text"
+								},
+								{
+									"key": "logoBanner",
+									"type": "file",
+									"src": "/home/balisalik/Pictures/Screenshots/1.png"
+								},
+								{
+									"key": "video",
+									"type": "file",
+									"src": "/home/balisalik/Downloads/fyp demo.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/video-image/create",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"video-image",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "investorId",
+									"value": "67028499c359a0e8",
+									"type": "text"
+								},
+								{
+									"key": "logoBanner",
+									"type": "file",
+									"src": "/run/user/1000/doc/99c7543f/Logo.svg"
+								},
+								{
+									"key": "video",
+									"type": "file",
+									"src": "/home/balisalik/Downloads/demo.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/video-image/update/67028499c359a0e872be82a0",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"video-image",
+								"update",
+								"67028499c359a0e872be82a0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/video-image",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"video-image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/video-image/remove/670287af91a423f0d9f3b8f2",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"video-image",
+								"remove",
+								"670287af91a423f0d9f3b8f2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Document",
+			"item": [
+				{
+					"name": "add",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "investorId",
+								"value": "67027cb860c150dbbf535f08",
+								"type": "text"
+							},
+							{
+								"key": "title",
+								"value": "business contract",
+								"type": "text"
+							},
+							{
+								"key": "documents",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "investorId",
+									"value": "67027cb860c150dbbf535f08",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "123ddddd",
+									"type": "text"
+								},
+								{
+									"key": "documents",
+									"type": "file",
+									"src": "/home/balisalik/Pictures/Screenshots/4.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/documents/create",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"documents",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "investorId",
+									"value": "67028499c359a0e8",
+									"type": "text"
+								},
+								{
+									"key": "logoBanner",
+									"type": "file",
+									"src": "/run/user/1000/doc/99c7543f/Logo.svg"
+								},
+								{
+									"key": "video",
+									"type": "file",
+									"src": "/home/balisalik/Downloads/demo.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/documents/update/670289639f1e42f33673c93a",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"documents",
+								"update",
+								"670289639f1e42f33673c93a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/documents",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"documents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/documents/remove/670292ab7e2cd013e650106f",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"documents",
+								"remove",
+								"670292ab7e2cd013e650106f"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "add",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "investorId",
+								"value": "67027cb860c150dbbf535f08",
+								"type": "text"
+							},
+							{
+								"key": "title",
+								"value": "business contract",
+								"type": "text"
+							},
+							{
+								"key": "documents",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "adminId",
+									"value": "670272ff5cf01fc51779d8b5",
+									"type": "text"
+								},
+								{
+									"key": "profilePicture",
+									"type": "file",
+									"src": "/run/user/1000/doc/4d04d367/image.svg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/admin/create",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"admin",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "investorId",
+									"value": "67028499c359a0e8",
+									"type": "text"
+								},
+								{
+									"key": "logoBanner",
+									"type": "file",
+									"src": "/run/user/1000/doc/99c7543f/Logo.svg"
+								},
+								{
+									"key": "video",
+									"type": "file",
+									"src": "/home/balisalik/Downloads/demo.mp4"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/admin/update/6702d6d8be46085b5b929dec",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"admin",
+								"update",
+								"6702d6d8be46085b5b929dec"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/documents",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"documents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/admin/remove/6702d70fbe46085b5b929dee",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"admin",
+								"remove",
+								"6702d70fbe46085b5b929dee"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "industry-interest",
+			"item": [
+				{
+					"name": "add",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "investorId",
+								"value": "67027cb860c150dbbf535f08",
+								"type": "text"
+							},
+							{
+								"key": "title",
+								"value": "business contract",
+								"type": "text"
+							},
+							{
+								"key": "documents",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"industries\": [\n    \"Technology\",\n    \"Finance\",\n    \"Healthcare\",\n    \"Education\",\n    \"Manufacturing\",\n    \"Retail\",\n    \"Transportation\",\n    \"Agriculture\",\n    \"Energy\",\n    \"Construction\",\n    \"Telecommunications\",\n    \"Entertainment\",\n    \"Real Estate\",\n    \"Automotive\",\n    \"Hospitality\",\n    \"Aerospace\",\n    \"Pharmaceutical\",\n    \"Logistics\",\n    \"Insurance\",\n    \"Food and Beverage\"\n  ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/industry-interest/create",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"industry-interest",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/industry-interest",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"industry-interest"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

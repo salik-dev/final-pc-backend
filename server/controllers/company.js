@@ -54,6 +54,15 @@ exports.getAll = async (req, res) => {
     }
 };
 
+exports.getCompanies = async(req, res) => {
+    try {
+        const companies = await Company.find({}, {_id: 1, pitchTitle: 1 });
+        Response(res, 200, "Company Fetched Successfully", companies);
+    } catch (error) {
+        Response(res, 500, "Something went wrong during Company data fetch", error.message);
+    }
+}
+
 // Update a company by ID
 exports.updateById = async (req, res) => {
     const {

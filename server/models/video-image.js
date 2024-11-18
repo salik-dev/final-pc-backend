@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema.Types;
 
 const videoImageSchema = new mongoose.Schema({
-    entrepreneurId: {
+    companyId: {
         type: ObjectId,
         ref: 'Company',
         required: [true, 'Company id is missing'],

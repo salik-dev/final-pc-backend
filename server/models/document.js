@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema.Types;
 
 const additionalDocSchema = new mongoose.Schema({
-    entrepreneurId: {
+    companyId: {
         type: ObjectId,
         ref: 'Company',
         required: [true, 'Company is required'],

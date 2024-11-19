@@ -1,4 +1,6 @@
+const mongoose = require('mongoose');
 const Document = require("../models/document");
+const Company = require("../models/document");
 const upload = require("../../utils/multer");
 const { Response } = require("../../utils/response");
 const fs = require("fs");
@@ -51,23 +53,23 @@ exports.getAll = async (req, res) => {
     }
 };
 
-// Get all specific documents
 exports.getEntrepreneurDocs = async (req, res) => {
     try {
         const {id} = req.params;
-        // const documents = await Document.find().populate('entrepreneurId');
-        const documents = await Document.find()
-            .populate({
-                path: "companyId",
-                select: "pitchTitle entrepreneurId",
-                populate: {
-                    path: "entrepreneurId",
-                    select: "email", // Fetch the email field from the Entrepreneur collection
-                },
-            });
+        const entrepreneurObjectId = new mongoose.Types.ObjectId(id);
+        const companies = await Company.find({entrepreneurId: entrepreneurObjectId}, {_id: 1, pitchTitle: 1 });
+        console.log('e data', companies);
 
-        Response(res, 200, "Documents Fetched Successfully", documents);
+        // Extract company IDs from the companies
+        const companyIds = companies.map((company) => company._id);
+
+        // Find documents that match the extracted company IDs
+        const documents = await Document.find({ companyId: { $in: companyIds } });
+
+        // Respond with the fetched documents
+        Response(res, 200, "Documents Fetched Successfully", { companies, documents });
     } catch (error) {
+        console.error(error.message);
         Response(res, 500, "Server Error during Document Fetch", error.message);
     }
 };

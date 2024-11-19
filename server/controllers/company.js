@@ -61,7 +61,6 @@ exports.getCompanies = async(req, res) => {
         const {id} = req.params;
         const entrepreneurObjectId = new mongoose.Types.ObjectId(id);
         const companies = await Company.find({entrepreneurId: entrepreneurObjectId}, {_id: 1, pitchTitle: 1 });
-        console.log('c output', companies);
         Response(res, 200, "Company Fetched Successfully", companies);
     } catch (error) {
         Response(res, 500, "Something went wrong during Company data fetch", error.message);

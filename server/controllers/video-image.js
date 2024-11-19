@@ -8,8 +8,8 @@ const path = require("path");
 exports.upload = (req, res, next) => {
   // Limit to 5 images and 1 video
   upload.fields([
-    { name: "logoBanner", maxCount: 1 },  // For image upload
-    { name: "video", maxCount: 1 },       // For video upload
+    { name: "logoBanner", maxCount: 1 },
+    { name: "video", maxCount: 1 },
   ])(req, res, async (err) => {
     if (err) {
       Response(
@@ -21,27 +21,19 @@ exports.upload = (req, res, next) => {
       return;
     }
 
-    const { entrepreneurId } = req.body;
+    const { companyId } = req.body;
 
     try {
-      // let logoBanner = req.files.logoBanner
-      //   ? req.files.logoBanner.map(file => `/uploads${file.path.split('/uploads')[1]}`)
-      //   : [];
-
         let logoBanner = req.files.logoBanner
         ? req.files.logoBanner.map(file => `/uploads/${file.filename}`)
         : [];
-
-        // let video = req.files.video
-        // ? req.files.video.map(file => `/uploads${file.path.split('/uploads')[1]}`)
-        // : [];
 
         let video = req.files.video
         ? req.files.video.map(file => `/uploads/${file.filename}`)
         : [];
 
       const media = new VideoImage({
-        entrepreneurId,
+        companyId,
         logoBanner,
         video,
       });
@@ -75,15 +67,12 @@ exports.updateById = (req, res) => {
       return;
     }
 
-    const { entrepreneurId } = req.body;
-
     try {
       const media = await VideoImage.findById(req.params.id);
       if (!media) {
         Response(res, 404, "Media Not Found", {});
         return;
       }
-      console.log(entrepreneurId, req.files.logoBanner, req.files.video);
 
       // Remove old media files from disk if new ones are uploaded
       if (req.files.logoBanner) {
@@ -94,7 +83,6 @@ exports.updateById = (req, res) => {
           });
         });
         // Storing new medial files
-        // media.logoBanner = req.files.logoBanner.map(file => `/uploads${file.path.split('/uploads')[1]}`);
         media.logoBanner = req.files.logoBanner.map(file => `/uploads/${file.filename}`);
       }
 
@@ -108,11 +96,9 @@ exports.updateById = (req, res) => {
         });
 
         // Storing new media video
-        // media.video = req.files.video.map(file => `/uploads${file.path.split('/uploads')[1]}`);
         media.video = req.files.video.map(file => `/uploads/${file.filename}`);
       }
 
-      media.entrepreneurId = entrepreneurId;
       await media.save();
       Response(res, 200, "Media updated successfully", media);
     } catch (error) {

@@ -4,7 +4,8 @@ const {
     upload,
     getAll,
     updateById,
-    deleteById
+    deleteById,
+    getEntrepreneurDocs
 } = require('../controllers/document');
 
 const router = express.Router();
@@ -12,6 +13,7 @@ const permissions = ['Admin', 'Entrepreneur'];
 
 router.route('/create').post(protect, restrict(permissions), upload);
 router.route('/').get(protect, restrict(permissions), getAll);
+router.route('/entrepreneur-documents/:id').get(protect, restrict(permissions), getEntrepreneurDocs);
 router.route('/update/:id').put(protect, restrict(permissions), updateById);
 router.route('/remove/:id').delete(protect, restrict(permissions), deleteById);
 

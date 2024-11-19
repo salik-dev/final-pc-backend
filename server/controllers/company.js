@@ -1,4 +1,4 @@
-// controllers/companyController.js
+const mongoose = require('mongoose');
 const Company = require('../models/company');
 const User = require('../models/user');
 const { Response } = require("../../utils/response");
@@ -18,7 +18,6 @@ exports.create = async (req, res) => {
         investmentRange,
         previousRoundRaise,
     } = req.body;
-    console.log('req.body',  req.body);
 
     try {
         let company = new Company({
@@ -47,7 +46,10 @@ exports.create = async (req, res) => {
 // Get all companies
 exports.getAll = async (req, res) => {
     try {
-        const companies = await Company.find();
+        const companies = await Company.find().populate({
+            path: 'entrepreneurId',
+            select: ['email', 'fullName'],
+        });
         Response(res, 200, "Companies Fetched Successfully", companies);
     } catch (error) {
         Response(res, 500, "Something went wrong during company data fetch", error.message);
@@ -56,7 +58,10 @@ exports.getAll = async (req, res) => {
 
 exports.getCompanies = async(req, res) => {
     try {
-        const companies = await Company.find({}, {_id: 1, pitchTitle: 1 });
+        const {id} = req.params;
+        const entrepreneurObjectId = new mongoose.Types.ObjectId(id);
+        const companies = await Company.find({entrepreneurId: entrepreneurObjectId}, {_id: 1, pitchTitle: 1 });
+        console.log('c output', companies);
         Response(res, 200, "Company Fetched Successfully", companies);
     } catch (error) {
         Response(res, 500, "Something went wrong during Company data fetch", error.message);
@@ -77,8 +82,6 @@ exports.updateById = async (req, res) => {
         investmentRange,
         previousRoundRaise,
     } = req.body;
-
-    console.log('req ', req.body);
 
     try {
         const company = await Company.findById(req.params.id);

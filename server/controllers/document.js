@@ -10,14 +10,14 @@ exports.upload = (req, res, next) => {
         if (err) {
             Response(res, 400, "Something went wrong during document upload...", err.message);
         }
-        const { entrepreneurId, title } = req.body;
+        const { companyId, title } = req.body;
         try {
             const docFind = await Document.findOne({ title });
             if (docFind) {
                 Response(res, 403, "Document with this title already exists. Try with a different title", {});
             } else {
                 const document = new Document({
-                    entrepreneurId,
+                    companyId,
                     title,
                     // documents: req.files.map((file) => `/uploads${file.path.split('/uploads')[1]}`),
                     documents: req.files.map((file) => `/uploads/${file.filename}`),
@@ -35,7 +35,37 @@ exports.upload = (req, res, next) => {
 exports.getAll = async (req, res) => {
     try {
         // const documents = await Document.find().populate('entrepreneurId');
-        const documents = await Document.find();
+        const documents = await Document.find()
+            .populate({
+                path: "companyId",
+                select: "pitchTitle entrepreneurId",
+                populate: {
+                    path: "entrepreneurId",
+                    select: "email", // Fetch the email field from the Entrepreneur collection
+                },
+            });
+
+        Response(res, 200, "Documents Fetched Successfully", documents);
+    } catch (error) {
+        Response(res, 500, "Server Error during Document Fetch", error.message);
+    }
+};
+
+// Get all specific documents
+exports.getEntrepreneurDocs = async (req, res) => {
+    try {
+        const {id} = req.params;
+        // const documents = await Document.find().populate('entrepreneurId');
+        const documents = await Document.find()
+            .populate({
+                path: "companyId",
+                select: "pitchTitle entrepreneurId",
+                populate: {
+                    path: "entrepreneurId",
+                    select: "email", // Fetch the email field from the Entrepreneur collection
+                },
+            });
+
         Response(res, 200, "Documents Fetched Successfully", documents);
     } catch (error) {
         Response(res, 500, "Server Error during Document Fetch", error.message);
@@ -52,8 +82,8 @@ exports.updateById = (req, res) => {
             return;
         }
 
-        const { entrepreneurId, title } = req.body;
-        console.log(entrepreneurId, title, req.files.documents);
+        const { title } = req.body;
+        console.log(title, req.files.documents);
 
         try {
             const document = await Document.findById(req.params.id);
@@ -75,7 +105,6 @@ exports.updateById = (req, res) => {
                 document.documents = req.files.documents.map(file => `/uploads/${file.filename}`);
             }
 
-            document.entrepreneurId = entrepreneurId || document.entrepreneurId;
             document.title = title || document.title;
 
             await document.save();

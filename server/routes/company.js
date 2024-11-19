@@ -14,7 +14,7 @@ const permissions = ['Admin', 'Entrepreneur'];
 
 router.route('/create').post(protect, restrict(permissions), create);
 router.route('/').get(protect, restrict(permissions), getAll);
-router.route('/get-companies').get(getCompanies),
+router.route('/get-companies/:id').get(getCompanies),
 router.route('/update/:id').put(protect, restrict(permissions), updateById);
 router.route('/remove/:id').delete(protect, restrict(permissions), deleteById);
 

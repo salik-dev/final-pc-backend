@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const Entrepreneur = require("../models/entrepreneur");
 const Document = require("../models/document");
-const Company = require("../models/document");
+const Company = require("../models/company");
 const upload = require("../../utils/multer");
 const { Response } = require("../../utils/response");
 const fs = require("fs");
@@ -21,7 +22,6 @@ exports.upload = (req, res, next) => {
                 const document = new Document({
                     companyId,
                     title,
-                    // documents: req.files.map((file) => `/uploads${file.path.split('/uploads')[1]}`),
                     documents: req.files.map((file) => `/uploads/${file.filename}`),
                 });
                 await document.save();
@@ -55,19 +55,47 @@ exports.getAll = async (req, res) => {
 
 exports.getEntrepreneurDocs = async (req, res) => {
     try {
-        const {id} = req.params;
-        const entrepreneurObjectId = new mongoose.Types.ObjectId(id);
-        const companies = await Company.find({entrepreneurId: entrepreneurObjectId}, {_id: 1, pitchTitle: 1 });
-        console.log('e data', companies);
+        const { id } = req.params;
 
-        // Extract company IDs from the companies
+        // Find the entrepreneur and fetch their email
+        const entrepreneur = id ? await Entrepreneur.findById(
+            id,
+            { _id: 1, email: 1 }
+        ): await Entrepreneur.find();
+
+        if (!entrepreneur) {
+            return Response(res, 404, "Entrepreneur not found");
+        }
+
+        // Find all companies associated with the entrepreneur
+        const companies = id ? await Company.find(
+            { entrepreneurId: entrepreneur._id },
+            { _id: 1, pitchTitle: 1 }
+        ) : await Company.find();
+
+        if (!companies.length) {
+            return Response(res, 404, "No companies found for this entrepreneur");
+        }
+
+        // Extract company IDs
         const companyIds = companies.map((company) => company._id);
 
-        // Find documents that match the extracted company IDs
-        const documents = await Document.find({ companyId: { $in: companyIds } });
+        // Fetch documents and populate the companyId field with pitchTitle
+        const documents = await Document.find({ companyId: { $in: companyIds } })
+            .populate({
+                path: "companyId",
+                select: "pitchTitle", // Only include pitchTitle
+            });
 
-        // Respond with the fetched documents
-        Response(res, 200, "Documents Fetched Successfully", { companies, documents });
+        // Format the response to include pitchTitle and entrepreneur email
+        const formattedDocuments = documents.map((doc) => ({
+            ...doc.toObject(),
+            pitchTitle: doc.companyId?.pitchTitle || null,
+            entrepreneurEmail: entrepreneur.email,
+            companyId: undefined, // Remove companyId if it's not needed
+        }));
+
+        Response(res, 200, "Documents Fetched Successfully", formattedDocuments );
     } catch (error) {
         console.error(error.message);
         Response(res, 500, "Server Error during Document Fetch", error.message);

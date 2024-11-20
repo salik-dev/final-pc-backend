@@ -61,50 +61,63 @@ exports.getAll = async (req, res) => {
 // Get Entrepreneur Media
 exports.getEntrepreneurMedia = async (req, res) => {
   try {
-    const { id } = req.params;
+      const { id } = req.params;
 
-    // Find the entrepreneur and fetch their email
-    const entrepreneur = id ? await Entrepreneur.findById(
-      id,
-      { _id: 1, email: 1 }
-    ) : await Entrepreneur.find();
+      // Step 1: Fetch entrepreneur(s)
+      const entrepreneurs = id
+          ? await Entrepreneur.find({ _id: id }, { _id: 1, email: 1 })
+          : await Entrepreneur.find({}, { _id: 1, email: 1 });
 
-    if (!entrepreneur) {
-      return Response(res, 404, "Entrepreneur not found");
-    }
+      if (!entrepreneurs.length) {
+          return Response(res, 404, "Entrepreneur(s) not found");
+      }
 
-    // Find all companies associated with the entrepreneur
-    const companies = id ? await Company.find(
-      { entrepreneurId: entrepreneur._id },
-      { _id: 1, pitchTitle: 1 }
-    ): await Company.find();
+      // Step 2: Fetch all companies associated with the entrepreneurs
+      const entrepreneurIds = entrepreneurs.map((entrepreneur) => entrepreneur._id);
+      const companies = await Company.find(
+          { entrepreneurId: { $in: entrepreneurIds } },
+          { _id: 1, pitchTitle: 1, entrepreneurId: 1 }
+      );
 
-    if (!companies.length) {
-      return Response(res, 404, "No companies found for this entrepreneur");
-    }
+      if (!companies.length) {
+          return Response(res, 404, "No companies found for the given entrepreneurs");
+      }
 
-    // Extract company IDs
-    const companyIds = companies.map((company) => company._id);
+      // Step 3: Extract company IDs and fetch documents
+      const companyIds = companies.map((company) => company._id);
+      const documents = await VideoImage.find({ companyId: { $in: companyIds } });
 
-    // Fetch videoImages and populate the companyId field with pitchTitle
-    const videoImages = await VideoImage.find({ companyId: { $in: companyIds } })
-      .populate({
-        path: "companyId",
-        select: "pitchTitle", // Only include pitchTitle
+      if (!documents.length) {
+          return Response(res, 404, "No documents found for the given companies");
+      }
+
+      // Step 4: Create lookup maps
+      const entrepreneurMap = Object.fromEntries(
+          entrepreneurs.map((entrepreneur) => [entrepreneur._id.toString(), entrepreneur.email])
+      );
+
+      const companyMap = Object.fromEntries(
+          companies.map((company) => [company._id.toString(), {
+              pitchTitle: company.pitchTitle,
+              entrepreneurEmail: entrepreneurMap[company.entrepreneurId.toString()]
+          }])
+      );
+
+      // Step 5: Format documents to include pitchTitle and entrepreneurEmail
+      const formattedDocuments = documents.map((doc) => {
+          const companyInfo = companyMap[doc.companyId?.toString()] || {};
+          return {
+              ...doc.toObject(),
+              pitchTitle: companyInfo.pitchTitle || null,
+              entrepreneurEmail: companyInfo.entrepreneurEmail || null,
+          };
       });
 
-    // Format the response to include pitchTitle and entrepreneur email
-    const formattedMedia = videoImages.map((doc) => ({
-      ...doc.toObject(),
-      pitchTitle: doc.companyId?.pitchTitle || null,
-      entrepreneurEmail: entrepreneur.email,
-      companyId: undefined, // Remove companyId if it's not needed
-    }));
-
-    Response(res, 200, "Media Fetched Successfully", formattedMedia);
+      // Step 6: Send the response
+      Response(res, 200, "Documents Fetched Successfully", formattedDocuments);
   } catch (error) {
-    console.error(error.message);
-    Response(res, 500, "Server Error during Document Fetch", error.message);
+      console.error(error.message);
+      Response(res, 500, "Server Error during Document Fetch", error.message);
   }
 };
 

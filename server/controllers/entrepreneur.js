@@ -30,7 +30,6 @@ exports.create = (req, res, next) => {
                 return Response(res, 403, "Entrepreneur with this email already exists", {});
             }
 
-            // profilePicture = `/uploads/${req.file.path.split('/uploads')[1]}`;
             profilePicture = `/uploads/${req.file.filename}`;
 
             let entrepreneur = new Entrepreneur({
@@ -66,9 +65,9 @@ exports.getAll = async (req, res) => {
     }
 };
 
-exports.getEntrepreneur = async(req, res) => {
+exports.getEntrepreneur = async (req, res) => {
     try {
-        const entrepreneurs = await Entrepreneur.find({}, {_id: 1, email: 1 });
+        const entrepreneurs = await Entrepreneur.find({}, { _id: 1, email: 1 });
         Response(res, 200, "Entrepreneur Fetched Successfully", entrepreneurs);
     } catch (error) {
         Response(res, 500, "Something went wrong during Entrepreneur data fetch", error.message);
@@ -110,7 +109,6 @@ exports.updateById = (req, res) => {
                     });
                 });
                 // Storing new medial files
-                // entrepreneur.profilePicture = req.files.profilePicture.map(file => `/uploads${file.path.split('/uploads')[1]}`);
                 entrepreneur.profilePicture = req.files.profilePicture.map(file => `/uploads/${file.filename}`);
             }
 
@@ -173,34 +171,54 @@ exports.deleteById = async (req, res) => {
 
 exports.findEntrepreneurs = async (req, res) => {
     try {
-        const data = await Entrepreneur.aggregate([
+        const entrepreneurs = await Entrepreneur.aggregate([
             {
-                $lookup: {
-                    from: 'companies',
-                    localField: '_id',
-                    foreignField: 'entrepreneurId',
-                    as: 'companies',
-                },
+              $lookup: {
+                from: 'companies', 
+                localField: '_id', 
+                foreignField: 'entrepreneurId', 
+                as: 'companies',
+              },
             },
             {
-                $lookup: {
-                    from: 'documents',
-                    localField: '_id',
-                    foreignField: 'entrepreneurId',
-                    as: 'documents',
-                },
+              $unwind: {
+                path: '$companies',
+                preserveNullAndEmptyArrays: true,
+              },
             },
             {
-                $lookup: {
-                    from: 'videoimages',
-                    localField: '_id',
-                    foreignField: 'entrepreneurId',
-                    as: 'videoImages',
-                },
+              $lookup: {
+                from: 'documents',
+                localField: 'companies._id',
+                foreignField: 'companyId',
+                as: 'companies.documents',
+              },
             },
-        ]);
+            {
+              $lookup: {
+                from: 'videoimages',
+                localField: 'companies._id',
+                foreignField: 'companyId',
+                as: 'companies.videoImages',
+              },
+            },
+            {
+              $group: {
+                _id: '$_id',
+                fullName: { $first: '$fullName' },
+                email: { $first: '$email' },
+                phoneNumber: { $first: '$phoneNumber' },
+                profilePicture: { $first: '$profilePicture' },
+                location: { $first: '$location' },
+                industry: { $first: '$industry' },
+                Bios: { $first: '$Bios' },
+                skills: { $first: '$skills' },
+                companies: { $push: '$companies' },
+              },
+            },
+          ]);
 
-        Response(res, 200, "Entrepreneur Fetch Successfully", data);
+        Response(res, 200, "Entrepreneur Fetch Successfully", entrepreneurs);
     } catch (error) {
         Response(res, 500, "Error during find Entrepreneur", error.message);
     }

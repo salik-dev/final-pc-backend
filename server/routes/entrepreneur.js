@@ -16,6 +16,6 @@ router.route('/').get(protect, restrict(permissions), getAll);
 router.route('/get-entrepreneur').get(getEntrepreneur);
 router.route('/update/:id').put(protect, restrict(permissions), updateById);
 router.route('/remove/:id').delete(protect, restrict(permissions), deleteById);
-router.route('/find').get(protect, restrict(['Admin', 'Investor']), findEntrepreneurs);
+router.route('/find').get(protect, restrict(['Admin', 'Investor', 'Entrepreneur']), findEntrepreneurs);
 
 module.exports = router;

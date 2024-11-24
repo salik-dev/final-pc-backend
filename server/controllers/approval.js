@@ -43,7 +43,7 @@ exports.getAllRequestUsers = async (req, res) => {
             { requestApproval: true },
             { $or: [{ status: 'pending' }, { status: 'rejected' }] }
         ]
-    }, {password: 0, createdAt: 0, updatedAt: 0, __v: 0});
+    }, { password: 0, createdAt: 0, updatedAt: 0, __v: 0 });
 
     if (!getAll) {
         Response(res, 500, "Something went wrong during request approval user. Try Again!", {});

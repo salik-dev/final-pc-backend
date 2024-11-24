@@ -11,17 +11,7 @@ exports.create = (req, res, next) => {
         if (err) {
             return Response(res, 400, "Error during profile picture upload", err.message);
         }
-
-        let {
-            fullName,
-            email,
-            phoneNumber,
-            profilePicture,
-            location,
-            industry,
-            Bios,
-            skills
-        } = req.body;
+        let { fullName, email, phoneNumber, profilePicture, location, industry, Bios, skills } = req.body;
 
         try {
             const { role, status, _id } = await User.findOne({ email }, { role: 1, status: 1, _id: 1 });
@@ -29,20 +19,8 @@ exports.create = (req, res, next) => {
             if (entrepreneurEXist) {
                 return Response(res, 403, "Entrepreneur with this email already exists", {});
             }
-
             profilePicture = `/uploads/${req.file.filename}`;
-
-            let entrepreneur = new Entrepreneur({
-                fullName,
-                email,
-                phoneNumber,
-                profilePicture,
-                location,
-                industry,
-                Bios,
-                skills
-            });
-
+            let entrepreneur = new Entrepreneur({ fullName, email, phoneNumber, profilePicture, location, industry, Bios, skills });
             entrepreneur = await entrepreneur.save();
             entrepreneur = entrepreneur.toObject(); // Convert to plain object
             entrepreneur.role = role;
@@ -82,24 +60,13 @@ exports.updateById = (req, res) => {
         if (err) {
             return Response(res, 400, "Error during profile picture upload", {});
         }
-
-        const {
-            fullName,
-            email,
-            phoneNumber,
-            location,
-            industry,
-            Bios,
-            skills
-        } = req.body;
-
+        const { fullName, email, phoneNumber, location, industry, Bios, skills } = req.body;
         try {
             let entrepreneur = await Entrepreneur.findById(req.params.id);
             if (!entrepreneur) {
                 return Response(res, 404, "Entrepreneur Not Found", {});
             }
             const user = await User.findOne({ email }).select("+password");
-
             // Remove old profile picture from disk if new ones are uploaded
             if (req.files.profilePicture) {
                 entrepreneur.profilePicture.forEach((image) => {
@@ -139,7 +106,6 @@ exports.deleteById = async (req, res) => {
             Response(res, 404, "Entrepreneur Not Found", {});
             return;
         }
-
         // Remove documents from disk
         entrepreneur.profilePicture.forEach((docPath) => {
             const fileName = path.basename(docPath);
@@ -161,7 +127,6 @@ exports.deleteById = async (req, res) => {
                 }
             });
         });
-
         await entrepreneur.remove();
         Response(res, 200, "Document Removed Successfully", entrepreneur);
     } catch (error) {
@@ -173,51 +138,50 @@ exports.findEntrepreneurs = async (req, res) => {
     try {
         const entrepreneurs = await Entrepreneur.aggregate([
             {
-              $lookup: {
-                from: 'companies', 
-                localField: '_id', 
-                foreignField: 'entrepreneurId', 
-                as: 'companies',
-              },
+                $lookup: {
+                    from: 'companies',
+                    localField: '_id',
+                    foreignField: 'entrepreneurId',
+                    as: 'companies',
+                },
             },
             {
-              $unwind: {
-                path: '$companies',
-                preserveNullAndEmptyArrays: true,
-              },
+                $unwind: {
+                    path: '$companies',
+                    preserveNullAndEmptyArrays: true,
+                },
             },
             {
-              $lookup: {
-                from: 'documents',
-                localField: 'companies._id',
-                foreignField: 'companyId',
-                as: 'companies.documents',
-              },
+                $lookup: {
+                    from: 'documents',
+                    localField: 'companies._id',
+                    foreignField: 'companyId',
+                    as: 'companies.documents',
+                },
             },
             {
-              $lookup: {
-                from: 'videoimages',
-                localField: 'companies._id',
-                foreignField: 'companyId',
-                as: 'companies.videoImages',
-              },
+                $lookup: {
+                    from: 'videoimages',
+                    localField: 'companies._id',
+                    foreignField: 'companyId',
+                    as: 'companies.videoImages',
+                },
             },
             {
-              $group: {
-                _id: '$_id',
-                fullName: { $first: '$fullName' },
-                email: { $first: '$email' },
-                phoneNumber: { $first: '$phoneNumber' },
-                profilePicture: { $first: '$profilePicture' },
-                location: { $first: '$location' },
-                industry: { $first: '$industry' },
-                Bios: { $first: '$Bios' },
-                skills: { $first: '$skills' },
-                companies: { $push: '$companies' },
-              },
+                $group: {
+                    _id: '$_id',
+                    fullName: { $first: '$fullName' },
+                    email: { $first: '$email' },
+                    phoneNumber: { $first: '$phoneNumber' },
+                    profilePicture: { $first: '$profilePicture' },
+                    location: { $first: '$location' },
+                    industry: { $first: '$industry' },
+                    Bios: { $first: '$Bios' },
+                    skills: { $first: '$skills' },
+                    companies: { $push: '$companies' },
+                },
             },
-          ]);
-
+        ]);
         Response(res, 200, "Entrepreneur Fetch Successfully", entrepreneurs);
     } catch (error) {
         Response(res, 500, "Error during find Entrepreneur", error.message);

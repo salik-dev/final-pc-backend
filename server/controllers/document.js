@@ -124,10 +124,7 @@ exports.updateById = (req, res) => {
             Response(res, 400, err.message, {});
             return;
         }
-
         const { title } = req.body;
-        console.log(title, req.files.documents);
-
         try {
             const document = await Document.findById(req.params.id);
             if (!document) {
@@ -144,12 +141,9 @@ exports.updateById = (req, res) => {
                     });
                 });
                 // Storing new medial files
-                // document.documents = req.files.documents.map(file => `/uploads${file.path.split('/uploads')[1]}`);
                 document.documents = req.files.documents.map(file => `/uploads/${file.filename}`);
             }
-
             document.title = title || document.title;
-
             await document.save();
             Response(res, 200, "Media updated successfully", document);
         } catch (error) {
@@ -166,7 +160,6 @@ exports.deleteById = async (req, res) => {
             Response(res, 404, "Document Not Found", {});
             return;
         }
-
         // Remove documents from disk
         document.documents.forEach((docPath) => {
             const fileName = path.basename(docPath);
@@ -188,7 +181,6 @@ exports.deleteById = async (req, res) => {
                 }
             });
         });
-
         await document.remove();
         Response(res, 200, "Document Removed Successfully", document);
     } catch (error) {

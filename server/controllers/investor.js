@@ -12,50 +12,15 @@ exports.create = (req, res, next) => {
             return Response(res, 400, "Error during profile picture upload", err.message);
         }
 
-        const {
-            fullName,
-            email,
-            phoneNumber,
-            companyName,
-            industryInterest,
-            Bios,
-            skills,
-            location,
-            startupStagePreference,
-            investmentAmountRange,
-            geographicalPreference,
-            typeOfInvestment,
-            investmentGoals,
-            investmentHistory,
-        } = req.body;
+        const { fullName, email, phoneNumber, companyName, industryInterest, Bios, skills, location, startupStagePreference, investmentAmountRange, geographicalPreference, typeOfInvestment, investmentGoals, investmentHistory } = req.body;
         try {
             const { role, status, _id } = await User.findOne({ email }, { role: 1, status: 1, _id: 1 });
             const investorExists = await Investor.findOne({ email });
             if (investorExists) {
                 return Response(res, 403, "Investor with this email already exists", {});
             }
-
-            // const profilePicture = `/uploads${req.file.path.split('/uploads')[1]}`;
             const profilePicture = `/uploads/${req.file.filename}`;
-
-            // const profilePicture = req.files.profilePicture.map(file => `/uploads/${file.filename}`);
-            let investor = new Investor({
-                fullName,
-                email,
-                phoneNumber,
-                profilePicture,
-                companyName,
-                industryInterest,
-                Bios,
-                skills,
-                location,
-                startupStagePreference,
-                investmentAmountRange,
-                geographicalPreference,
-                typeOfInvestment,
-                investmentGoals,
-                investmentHistory,
-            });
+            let investor = new Investor({ fullName, email, phoneNumber, profilePicture, companyName, industryInterest, Bios, skills, location, startupStagePreference, investmentAmountRange, geographicalPreference, typeOfInvestment, investmentGoals, investmentHistory });
 
             investor = await investor.save();
             investor = investor.toObject(); // Convert to plain object
@@ -88,22 +53,8 @@ exports.updateById = (req, res) => {
             return Response(res, 400, "Error during profile picture upload", {});
         }
 
-        const {
-            fullName,
-            email,
-            phoneNumber,
-            companyName,
-            industryInterest,
-            Bios,
-            skills,
-            location,
-            startupStagePreference,
-            investmentAmountRange,
-            geographicalPreference,
-            typeOfInvestment,
-            investmentGoals,
-            investmentHistory,
-        } = req.body;
+        const { fullName, email, phoneNumber, companyName, industryInterest, Bios, skills, location,
+            startupStagePreference, investmentAmountRange, geographicalPreference, typeOfInvestment, investmentGoals, investmentHistory } = req.body;
 
         try {
             let investor = await Investor.findById(req.params.id);
@@ -182,7 +133,6 @@ exports.deleteById = async (req, res) => {
                 }
             });
         });
-
         await investor.remove();
         return res.status(200).json({
             message: "Investor Removed Successfully",

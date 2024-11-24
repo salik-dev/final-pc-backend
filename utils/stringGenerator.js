@@ -7,7 +7,5 @@ exports.generateRandomString = (length = 6) => {
         const randomIndex = Math.floor(Math.random() * charactersLength);
         result += characters[randomIndex];
     }
-
     return result;
 }
-

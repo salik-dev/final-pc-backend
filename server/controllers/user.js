@@ -136,22 +136,16 @@ exports.signin = async (req, res, next) => {
     try {
 
         const { email, password } = req.body;
-
         if (!email || !password) {
             const err = new Error("email & password is not defined: 400");
             return next(err);
         }
-
         const user = await User.findOne({ email }).select("+password");
-
         // check if email or password exists or not
         if (!user || !(await user.comparePassword(password, user.password))) {
-            // const err = new Error("Incorrect email or password: 400");
-            // Response(res, 400, "Incorrect email or password", {});
             return res.status(400).json({
                 message: 'Incorrect  email or password',
             });
-            // return next(err);
         }
         const token = userToken(user._id);
 
@@ -221,17 +215,6 @@ exports.protect = async (req, res, next) => {
             const err = new Error("The user with the given token not exists");
             next(err);
         }
-
-        // if users changed pswd after token was issued
-        // if (await users.isPasswordChange(decodedToken.iat)) {
-        //     const err = new CustomError(
-        //         "The password has been changed recently. Plz, login again !",
-        //         401
-        //     );
-        //     return next(err);
-        // }
-
-        // access route to users
         req.user = users;
         next();
     }

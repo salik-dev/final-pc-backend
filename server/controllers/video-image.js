@@ -14,22 +14,14 @@ exports.upload = (req, res, next) => {
     { name: "video", maxCount: 1 },
   ])(req, res, async (err) => {
     if (err) {
-      Response(
-        res,
-        400,
-        "Something went wrong during media uploading...",
-        err.message
-      );
+      Response(res, 400, "Something went wrong during media uploading...", err.message);
       return;
     }
-
     const { companyId } = req.body;
-
     try {
       let logoBanner = req.files.logoBanner
         ? req.files.logoBanner.map(file => `/uploads/${file.filename}`)
         : [];
-
       let video = req.files.video
         ? req.files.video.map(file => `/uploads/${file.filename}`)
         : [];
@@ -39,7 +31,6 @@ exports.upload = (req, res, next) => {
         logoBanner,
         video,
       });
-
       await media.save();
       Response(res, 201, "Media uploaded successfully", media);
     } catch (error) {
@@ -61,63 +52,62 @@ exports.getAll = async (req, res) => {
 // Get Entrepreneur Media
 exports.getEntrepreneurMedia = async (req, res) => {
   try {
-      const { id } = req.params;
+    const { id } = req.params;
+    // Step 1: Fetch entrepreneur(s)
+    const entrepreneurs = id
+      ? await Entrepreneur.find({ _id: id }, { _id: 1, email: 1 })
+      : await Entrepreneur.find({}, { _id: 1, email: 1 });
 
-      // Step 1: Fetch entrepreneur(s)
-      const entrepreneurs = id
-          ? await Entrepreneur.find({ _id: id }, { _id: 1, email: 1 })
-          : await Entrepreneur.find({}, { _id: 1, email: 1 });
+    if (!entrepreneurs.length) {
+      return Response(res, 404, "Entrepreneur(s) not found");
+    }
 
-      if (!entrepreneurs.length) {
-          return Response(res, 404, "Entrepreneur(s) not found");
-      }
+    // Step 2: Fetch all companies associated with the entrepreneurs
+    const entrepreneurIds = entrepreneurs.map((entrepreneur) => entrepreneur._id);
+    const companies = await Company.find(
+      { entrepreneurId: { $in: entrepreneurIds } },
+      { _id: 1, pitchTitle: 1, entrepreneurId: 1 }
+    );
 
-      // Step 2: Fetch all companies associated with the entrepreneurs
-      const entrepreneurIds = entrepreneurs.map((entrepreneur) => entrepreneur._id);
-      const companies = await Company.find(
-          { entrepreneurId: { $in: entrepreneurIds } },
-          { _id: 1, pitchTitle: 1, entrepreneurId: 1 }
-      );
+    if (!companies.length) {
+      return Response(res, 404, "No companies found for the given entrepreneurs");
+    }
 
-      if (!companies.length) {
-          return Response(res, 404, "No companies found for the given entrepreneurs");
-      }
+    // Step 3: Extract company IDs and fetch documents
+    const companyIds = companies.map((company) => company._id);
+    const documents = await VideoImage.find({ companyId: { $in: companyIds } });
 
-      // Step 3: Extract company IDs and fetch documents
-      const companyIds = companies.map((company) => company._id);
-      const documents = await VideoImage.find({ companyId: { $in: companyIds } });
+    if (!documents.length) {
+      return Response(res, 404, "No documents found for the given companies");
+    }
 
-      if (!documents.length) {
-          return Response(res, 404, "No documents found for the given companies");
-      }
+    // Step 4: Create lookup maps
+    const entrepreneurMap = Object.fromEntries(
+      entrepreneurs.map((entrepreneur) => [entrepreneur._id.toString(), entrepreneur.email])
+    );
 
-      // Step 4: Create lookup maps
-      const entrepreneurMap = Object.fromEntries(
-          entrepreneurs.map((entrepreneur) => [entrepreneur._id.toString(), entrepreneur.email])
-      );
+    const companyMap = Object.fromEntries(
+      companies.map((company) => [company._id.toString(), {
+        pitchTitle: company.pitchTitle,
+        entrepreneurEmail: entrepreneurMap[company.entrepreneurId.toString()]
+      }])
+    );
 
-      const companyMap = Object.fromEntries(
-          companies.map((company) => [company._id.toString(), {
-              pitchTitle: company.pitchTitle,
-              entrepreneurEmail: entrepreneurMap[company.entrepreneurId.toString()]
-          }])
-      );
+    // Step 5: Format documents to include pitchTitle and entrepreneurEmail
+    const formattedDocuments = documents.map((doc) => {
+      const companyInfo = companyMap[doc.companyId?.toString()] || {};
+      return {
+        ...doc.toObject(),
+        pitchTitle: companyInfo.pitchTitle || null,
+        entrepreneurEmail: companyInfo.entrepreneurEmail || null,
+      };
+    });
 
-      // Step 5: Format documents to include pitchTitle and entrepreneurEmail
-      const formattedDocuments = documents.map((doc) => {
-          const companyInfo = companyMap[doc.companyId?.toString()] || {};
-          return {
-              ...doc.toObject(),
-              pitchTitle: companyInfo.pitchTitle || null,
-              entrepreneurEmail: companyInfo.entrepreneurEmail || null,
-          };
-      });
-
-      // Step 6: Send the response
-      Response(res, 200, "Documents Fetched Successfully", formattedDocuments);
+    // Step 6: Send the response
+    Response(res, 200, "Documents Fetched Successfully", formattedDocuments);
   } catch (error) {
-      console.error(error.message);
-      Response(res, 500, "Server Error during Document Fetch", error.message);
+    console.error(error.message);
+    Response(res, 500, "Server Error during Document Fetch", error.message);
   }
 };
 

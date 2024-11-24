@@ -5,38 +5,14 @@ const { Response } = require("../../utils/response");
 
 // Create a new company
 exports.create = async (req, res) => {
-    const {
-        entrepreneurId,
-        email,
-        pitchTitle,
-        shortSummary,
-        website,
-        companyBased,
-        industry,
-        stage,
-        ideaInvestorRole,
-        investmentRange,
-        previousRoundRaise,
-    } = req.body;
+    const { entrepreneurId, email, pitchTitle, shortSummary, website, companyBased, industry, stage, ideaInvestorRole, investmentRange, previousRoundRaise } = req.body;
 
     try {
-        let company = new Company({
-            entrepreneurId,
-            pitchTitle,
-            shortSummary,
-            website,
-            companyBased,
-            industry,
-            stage,
-            ideaInvestorRole,
-            investmentRange,
-            previousRoundRaise,
-        });
+        let company = new Company({ entrepreneurId, pitchTitle, shortSummary, website, companyBased, industry, stage, ideaInvestorRole, investmentRange, previousRoundRaise, });
         company = await company.save();
         company = company.toObject();
         const user = await User.findOne({ email }).select("+password");
         company.role = user.role;
-
         Response(res, 201, "Company Registered Successfully", company);
     } catch (error) {
         Response(res, 500, "Company registration failed, Try Again!", error.message);
@@ -56,11 +32,11 @@ exports.getAll = async (req, res) => {
     }
 };
 
-exports.getCompanies = async(req, res) => {
+exports.getCompanies = async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const entrepreneurObjectId = new mongoose.Types.ObjectId(id);
-        const companies = await Company.find({entrepreneurId: entrepreneurObjectId}, {_id: 1, pitchTitle: 1 });
+        const companies = await Company.find({ entrepreneurId: entrepreneurObjectId }, { _id: 1, pitchTitle: 1 });
         Response(res, 200, "Company Fetched Successfully", companies);
     } catch (error) {
         Response(res, 500, "Something went wrong during Company data fetch", error.message);
@@ -69,18 +45,7 @@ exports.getCompanies = async(req, res) => {
 
 // Update a company by ID
 exports.updateById = async (req, res) => {
-    const {
-        entrepreneurId,
-        pitchTitle,
-        shortSummary,
-        website,
-        companyBased,
-        industry,
-        stage,
-        ideaInvestorRole,
-        investmentRange,
-        previousRoundRaise,
-    } = req.body;
+    const { entrepreneurId, pitchTitle, shortSummary, website, companyBased, industry, stage, ideaInvestorRole, investmentRange, previousRoundRaise } = req.body;
 
     try {
         const company = await Company.findById(req.params.id);
@@ -115,7 +80,6 @@ exports.deleteById = async (req, res) => {
             Response(res, 404, "Company not found", {});
             return;
         }
-
         await company.remove();
         Response(res, 200, "Company Deleted Successfully", company);
     } catch (error) {

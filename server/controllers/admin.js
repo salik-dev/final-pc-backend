@@ -14,20 +14,10 @@ exports.upload = (req, res, next) => {
         }
         const { adminId } = req.body;
         try {
-            // const profilePicture = req.files.profilePicture.map(file => `/uploads${file.path.split('/uploads')[1]}`);
             const profilePicture = req.files.profilePicture.map(file => `/uploads/${file.filename}`);
-                    
-            // const adminFind = await Admin.findOne({ title });
-            // if (adminFind) {
-            //     Response(res, 403, "Admin with this title already exists. Try with a different title", {});
-            // } else {
-            const admin = new Admin({
-                adminId,
-                profilePicture,
-            });
+            const admin = new Admin({ adminId, profilePicture, });
             await admin.save();
             Response(res, 201, "Admin Registered Successfully", admin);
-            // }
         } catch (error) {
             Response(res, 500, "Server Error during Admin Registration", error.message);
         }
@@ -37,7 +27,6 @@ exports.upload = (req, res, next) => {
 // Get all documents
 exports.getAll = async (req, res) => {
     try {
-        // const documents = await Admin.find().populate('investorId');
         const admins = await Admin.find();
         Response(res, 200, "Admins Fetched Successfully", admins);
     } catch (error) {
@@ -70,7 +59,6 @@ exports.updateById = (req, res) => {
                 return;
             }
 
-            // const admin = await Admin.findOne({ adminId: req.params.id });
             const objectId = mongoose.Types.ObjectId(id);
             let admin = await Admin.findOne({ adminId: objectId });
 
@@ -78,8 +66,6 @@ exports.updateById = (req, res) => {
             if (!admin) {
                 admin = new Admin({
                     adminId: objectId,
-                    // profilePicture: req.files['profilePicture'].map((file) => file.path),
-                    // profilePicture: req.files['profilePicture'].map(file => `/uploads${file.path.split('/uploads')[1]}`)
                     profilePicture: req.files['profilePicture'].map(file => `/uploads/${file.filename}`)
                 });
                 await admin.save();
@@ -93,8 +79,6 @@ exports.updateById = (req, res) => {
                             if (err) console.error('Failed to delete image:', err);
                         });
                     });
-                    // Storing new medial files
-                    // admin.profilePicture = req.files.profilePicture.map(file => `/uploads${file.path.split('/uploads')[1]}`)
                     admin.profilePicture = req.files['profilePicture'].map(file => `/uploads/${file.filename}`)
                 }
             }
